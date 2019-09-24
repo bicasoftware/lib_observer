@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:lib_observer/awaiting_container.dart';
-import 'package:rxdart/rxdart.dart';
 
-class MultiObserver extends StatelessWidget {
-  final List<Stream> streams;
-  final Widget Function(BuildContext context, List<Object> data) onSuccess;
+class FutureObserver<T> extends StatelessWidget {
+  final Future<T> future;
+  final Widget Function(BuildContext context, T data) onSuccess;
   final Widget Function(BuildContext context) onAwaiting;
   final Widget Function(BuildContext context, Error erro) onError;
 
@@ -12,9 +11,9 @@ class MultiObserver extends StatelessWidget {
 
   Function get _defaultAwaiting => (context) => AwaitingContainer();
 
-  const MultiObserver({
+  const FutureObserver({
     Key key,
-    @required this.streams,
+    @required this.future,
     @required this.onSuccess,
     this.onAwaiting,
     this.onError,
@@ -22,10 +21,9 @@ class MultiObserver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Observable<List> zipStream = Observable.combineLatestList(streams);
-    return StreamBuilder<List<Object>>(
-      stream: zipStream,
-      builder: (context, AsyncSnapshot<Object> snapshot) {
+    return FutureBuilder<T>(
+      future: future,
+      builder: (context, AsyncSnapshot<T> snapshot) {
         if (snapshot.hasError) {
           return onError == null
               ? _defaultError(context, snapshot.error)

@@ -1,9 +1,10 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:lib_observer/awaiting_container.dart';
+import 'package:rxdart/rxdart.dart';
 
-class Observer<T> extends StatelessWidget {
-  final Stream<T> stream;
-  final Widget Function(BuildContext context, T data) onSuccess;
+class MergedStreamObserver extends StatelessWidget {
+  final List<Stream> streams;
+  final Widget Function(BuildContext context, List<Object> data) onSuccess;
   final Widget Function(BuildContext context) onAwaiting;
   final Widget Function(BuildContext context, Error erro) onError;
 
@@ -11,9 +12,9 @@ class Observer<T> extends StatelessWidget {
 
   Function get _defaultAwaiting => (context) => AwaitingContainer();
 
-  const Observer({
+  const MergedStreamObserver({
     Key key,
-    @required this.stream,
+    @required this.streams,
     @required this.onSuccess,
     this.onAwaiting,
     this.onError,
@@ -21,9 +22,10 @@ class Observer<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<T>(
-      stream: stream,
-      builder: (context, AsyncSnapshot<T> snapshot) {
+    final Observable<List> zipStream = Observable.combineLatestList(streams);
+    return StreamBuilder<List<Object>>(
+      stream: zipStream,
+      builder: (context, AsyncSnapshot<Object> snapshot) {
         if (snapshot.hasError) {
           return onError == null
               ? _defaultError(context, snapshot.error)
