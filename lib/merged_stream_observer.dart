@@ -22,7 +22,7 @@ class MergedStreamObserver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Observable<List> zipStream = Observable.combineLatestList(streams);
+    final Stream<List> zipStream = Rx.combineLatestList(streams);
     return StreamBuilder<List<Object>>(
       stream: zipStream,
       builder: (context, AsyncSnapshot<Object> snapshot) {

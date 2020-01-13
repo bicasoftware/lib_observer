@@ -5,12 +5,12 @@ author: Saulo Andrioli
 homepage: www.github.com/bicasoftware
 
 environment:
-  sdk: ">=2.5.0-dev.4.0.flutter-be66176534 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  rxdart: ^0.22.2
+  rxdart: ^0.23.1
 
 dev_dependencies:
   flutter_test:
